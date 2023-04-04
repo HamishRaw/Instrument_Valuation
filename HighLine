@@ -1,0 +1,21 @@
+ @impl true
+  def probability_of_winning(
+        current_price,
+        expires_at,
+        PIV,
+        strike_1,
+        _strike_2
+      ) do
+    Enum.min([
+      1.0,
+      Enum.max([
+        0.0,
+        binary_call(
+          current_price,
+          strike_1,
+          days_to_expiry(expires_at),
+          PIV
+        )
+      ])
+    ])
+  end
