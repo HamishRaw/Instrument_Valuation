@@ -1,7 +1,7 @@
  @impl true
   def probability_of_winning(
         current_price,
-        expires_at,
+        mins_to_expiry,
         PIV,
         strike_1,
         _strike_2
@@ -13,7 +13,7 @@
         binary_call(
           current_price,
           strike_1,
-          days_to_expiry(expires_at),
+          mins_to_expiry,
           PIV
         )
       ])
