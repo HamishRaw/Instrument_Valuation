@@ -1,0 +1,55 @@
+defmodule Instrument.Math do
+  require Logger
+  @sqrt_of_two :math.sqrt(2)
+
+  def binary_call(price, strike, days, implied_volatility) do
+    t = if days > 0, do: days / 365.0, else: 1
+
+    try do
+      ((:math.log(:erlang.abs(price / strike)) +
+          -0.5 * :math.pow(:erlang.abs(implied_volatility), 2) * t) /
+         (implied_volatility * :math.pow(:erlang.abs(t), 0.5)))
+      |> normal_distribution()
+    rescue
+      _ ->
+        Logger.error("
+          price - #{price},
+          strike - #{strike},
+          days - #{days},
+          t - #{t},
+          implied_volatility - #{implied_volatility}
+        ")
+    end
+  end
+
+  def normal_distribution(x) do
+    z = x / @sqrt_of_two
+    t = 1 / (1 + 0.5 * :erlang.abs(z))
+
+    ans =
+      1 -
+        t *
+          :math.exp(
+            -z * z - 1.26551223 +
+              t *
+                (1.00002368 +
+                   t *
+                     (0.37409196 +
+                        t *
+                          (0.09678418 +
+                             t *
+                               (-0.18628806 +
+                                  t *
+                                    (0.27886807 +
+                                       t *
+                                         (-1.13520398 +
+                                            t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))
+          )
+
+    if z >= 0 do
+      0.5 * (1.0 + ans)
+    else
+      0.5 * (1.0 - ans)
+    end
+  end
+end
