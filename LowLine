@@ -1,0 +1,11 @@
+ @impl true
+  def LowLine_Value(
+        current_price,
+        mins_to_expiry,
+        PIV,
+        strike_1,
+        _strike_2
+      ) do
+    1 -
+      binary_call(current_price, strike_1, mins_to_expiry, PIV)
+  end
