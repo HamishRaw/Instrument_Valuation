@@ -1,0 +1,44 @@
+defmodule Instrument_Valuation.Double_No_Touch.Math do
+  def double_no_touch_base(
+        current_price,
+        lower_strike,
+        upper_strike,
+        mins_to_expiry,
+        PDV,
+        rate \\ 0.0,
+        yield \\ 0.0,
+        n \\ 25
+      ) do
+    t = mins_to_expiry / (60 * 24 * 365)
+    r = rate / 100.0
+    d = yield / 100.0
+
+    alpha = 0.5 - (r - d) / :math.pow(PDV, 2.0)
+    beta = r + 0.5 * :math.pow(PDV, 2) * :math.pow(alpha, 2)
+    l = :math.log(upper_strike / lower_strike)
+
+    agg =
+      Enum.reduce(1..n, 0, fn j, acc ->
+        term1 =
+          j * (1.0 - :math.pow(-1.0, j) * :math.exp(-alpha * l)) /
+            (:math.pow(j, 2) * :math.pow(:math.pi(), 2) + :math.pow(alpha, 2) * :math.pow(l, 2))
+
+        term2 =
+          :math.exp(
+            (-0.5 * :math.pow(PDV, 2) * :math.pow(:math.pi() * j / l, 2) - beta) *
+              t
+          )
+
+        term3 = :math.sin(:math.pi() * j / l * :math.log(current_price / lower_strike))
+        acc + term1 * term2 * term3
+      end)
+
+    range_b = agg * 2.0 * :math.pi() * :math.pow(current_price / lower_strike, alpha)
+
+    case range_b do
+      result when result > 1 -> 1.0
+      result when result < 0 -> 0.0
+      result -> result
+    end
+  end
+end
