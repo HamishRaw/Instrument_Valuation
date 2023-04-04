@@ -1,5 +1,5 @@
 defmodule Instrument_Valuation.Double_No_Touch.Math do
-  def double_no_touch_base(
+  def double_no_touch_value(
         current_price,
         lower_strike,
         upper_strike,
