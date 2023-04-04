@@ -1,0 +1,84 @@
+defmodule Instrument_Valuation.Over_TugOfWar.Math do
+  def downout_one_touch_call(
+        current_price,
+        lower_barrier,
+        upper_barrier,
+        mins_to_expiry,
+        PDV,
+        rate \\ 0.0,
+        yield \\ 0.0,
+        n \\ 25
+      ) do
+    t = mins_to_expiry / (60 * 60 * 365)
+    r = rate / 100.0
+    d = yield / 100.0
+
+    k1 = 2.0 * (r - d) / :math.pow(PDV, 2.0)
+    alpha = -0.5 * (k1 - 1.0)
+    beta = -0.25 * :math.pow(k1 - 1.0, 2.0) - 2.0 * r / :math.pow(PDV, 2.0)
+
+    l = :math.log(lower_barrier / upper_barrier)
+    term_1 = :math.pow(current_price / upper_barrier, alpha)
+    term_2 = 1.0 - :math.log(current_price / upper_barrier) / l
+
+    otdocall =
+      calculate_boundary(
+        current_price,
+        upper_barrier,
+        PDV,
+        term_1,
+        term_2,
+        beta,
+        n,
+        t,
+        l
+      )
+
+    cond do
+      current_price < lower_barrier -> 0
+      current_price > upper_barrier -> 1
+      true -> otdocall
+    end
+  end
+
+  def upout_one_touch_call(
+        current_price,
+        upper_barrier,
+        lower_barrier,
+        mins_to_expiry,
+        PDV,
+        rate \\ 0.0,
+        yield \\ 0.0,
+        n \\ 25
+      ) do
+    t = mins_to_expiry / 365
+    r = rate / 100.0
+    d = yield / 100.0
+
+    k1 = 2.0 * (r - d) / :math.pow(PDV, 2.0)
+    alpha = -0.5 * (k1 - 1.0)
+    beta = -0.25 * :math.pow(k1 - 1.0, 2.0) - 2.0 * r / :math.pow(PDV, 2.0)
+
+    l = :math.log(lower_barrier / upper_barrier)
+    term_1 = :math.pow(current_price / upper_barrier, alpha)
+    term_2 = 1.0 - :math.log(current_price / upper_barrier) / l
+
+    otuoput =
+      calculate_boundary(
+        current_price,
+        upper_Barrier,
+        PDV,
+        term_1,
+        term_2,
+        beta,
+        n,
+        t,
+        l
+      )
+
+    cond do
+      current_price < upper_barrier -> 1
+      current_price > lower_barrier -> 0
+      true -> otuoput
+    end
+  end
