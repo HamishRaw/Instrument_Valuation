@@ -1,0 +1,25 @@
+defmodule Instrument.Over do
+  use BinaryBitcoin.Instrument.Base
+
+  @impl true
+  def name, do: "over"
+
+  @impl true
+  def strike_1(
+        current_price,
+        _seconds_to_expiry,
+        _current_implied_volatility,
+        _asset,
+        _instrument_configuration
+      ),
+      do: current_price
+
+  @impl true
+  def strike_2(
+        _current_price,
+        _seconds_to_expiry,
+        _current_implied_volatility,
+        _asset,
+        _instrument_configuration
+      ),
+      do: nil
