@@ -2,22 +2,22 @@ defmodule Instrument.Math do
   require Logger
   @sqrt_of_two :math.sqrt(2)
 
-  def binary_call(price, strike, days, implied_volatility) do
-    t = if days > 0, do: days / 365.0, else: 1
+  def binary_call(price, strike, mins, PIV) do
+    t = if mins > 0, do: mins / (60 * 24 * 365.0), else: 1
 
     try do
       ((:math.log(:erlang.abs(price / strike)) +
-          -0.5 * :math.pow(:erlang.abs(implied_volatility), 2) * t) /
-         (implied_volatility * :math.pow(:erlang.abs(t), 0.5)))
+          -0.5 * :math.pow(:erlang.abs(PIV), 2) * t) /
+         (PIV * :math.pow(:erlang.abs(t), 0.5)))
       |> normal_distribution()
     rescue
       _ ->
         Logger.error("
           price - #{price},
           strike - #{strike},
-          days - #{days},
+          mins - #{mins},
           t - #{t},
-          implied_volatility - #{implied_volatility}
+          PIV - #{PIV}
         ")
     end
   end
