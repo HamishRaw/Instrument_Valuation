@@ -1,5 +1,5 @@
  @impl true
-  def probability_of_winning(
+  def HighLine_Value(
         current_price,
         mins_to_expiry,
         PIV,
