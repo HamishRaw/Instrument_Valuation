@@ -1,0 +1,22 @@
+ @impl true
+  def HighTouch_Value(
+        current_price,
+        mins_to_expiry,
+        PIV,
+        strike_1,
+        _strike_2
+      ) do
+    Enum.min([
+      1.0,
+      Enum.max([
+        0.0,
+        2 * 
+          binary_call(
+          current_price,
+          strike_1,
+          mins_to_expiry,
+          PIV
+        )
+      ])
+    ])
+  end
