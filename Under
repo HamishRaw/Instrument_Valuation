@@ -1,11 +1,11 @@
   @impl true
   def Under_Value(
         current_price,
-        expires_at,
+        mins_to_expiry,
         PIV,
         strike_1,
         _strike_2
       ) do
     1 -
-      binary_call(current_price, strike_1, days_to_expiry(expires_at), PIV)
+      binary_call(current_price, strike_1, mins_to_expiry, PIV)
   end
