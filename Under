@@ -1,5 +1,5 @@
   @impl true
-  def probability_of_winning(
+  def Under_Value(
         current_price,
         expires_at,
         PIV,
