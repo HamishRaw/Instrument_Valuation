@@ -1,0 +1,10 @@
+  def Under_Tug_of_War_Value(
+        current_price,
+        mins_to_expiry,
+        PDV,
+        lower_barrier,
+        _upper_barrier
+      ) do
+    1 -
+      over_tug_of_war(current_price, lower_Barrier, upper_barrier, mins_to_expiry, PDV)
+  end
